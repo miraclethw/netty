@@ -438,6 +438,7 @@ public final class NioEventLoop extends SingleThreadEventLoop {
             try {
                 int strategy;
                 try {
+                    //如果task不为空，则调用epoll_wait函数，获取epoll事件,如果没有就返回SelectStrategy.SELECT
                     strategy = selectStrategy.calculateStrategy(selectNowSupplier, hasTasks());
                     switch (strategy) {
                     case SelectStrategy.CONTINUE:
@@ -801,6 +802,14 @@ public final class NioEventLoop extends SingleThreadEventLoop {
         return unwrappedSelector;
     }
 
+    /**
+     * 实际调用方法为 {@linkplain SelectorImpl#selectNow()} 最终调用 {@linkplain SelectorImpl#doSelect(long)}方法
+     * 根据操作系统不同 linux环境下实现为EpollSelectorImpl类，底层实现是Epoll_wait
+     * The epoll_wait() system call waits for events on the epoll(7) instance referred to by the file descriptor epfd
+     *
+     * @return
+     * @throws IOException
+     */
     int selectNow() throws IOException {
         return selector.selectNow();
     }

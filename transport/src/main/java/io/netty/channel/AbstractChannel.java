@@ -461,6 +461,12 @@ public abstract class AbstractChannel extends DefaultAttributeMap implements Cha
             return remoteAddress0();
         }
 
+        /**
+         *
+         * @param eventLoop SinleThreadEventLoop 参数来自于{@linkplain SingleThreadEventLoop#register(ChannelPromise)}的
+         *                  promise.channel().unsafe().register(this, promise) this，此处this就是 {@link SingleThreadEventLoop}
+         * @param promise
+         */
         @Override
         public final void register(EventLoop eventLoop, final ChannelPromise promise) {
             ObjectUtil.checkNotNull(eventLoop, "eventLoop");
@@ -474,12 +480,14 @@ public abstract class AbstractChannel extends DefaultAttributeMap implements Cha
                 return;
             }
 
+            //eventLoop 就是SinleThreadEventLoop
             AbstractChannel.this.eventLoop = eventLoop;
 
             if (eventLoop.inEventLoop()) {
                 register0(promise);
             } else {
                 try {
+                    //实现是SinleThreadEventLoop.excute()
                     eventLoop.execute(new Runnable() {
                         @Override
                         public void run() {

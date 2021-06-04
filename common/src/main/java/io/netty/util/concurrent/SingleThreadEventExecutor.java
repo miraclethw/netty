@@ -812,6 +812,9 @@ public abstract class SingleThreadEventExecutor extends AbstractScheduledEventEx
         return isTerminated();
     }
 
+    /**
+     * @param task task本身是 register0(promise)
+     */
     @Override
     public void execute(Runnable task) {
         ObjectUtil.checkNotNull(task, "task");
@@ -823,6 +826,11 @@ public abstract class SingleThreadEventExecutor extends AbstractScheduledEventEx
         execute(ObjectUtil.checkNotNull(task, "task"), false);
     }
 
+    /**
+     *
+     * @param task task本身是 register0(promise)
+     * @param immediate
+     */
     private void execute(Runnable task, boolean immediate) {
         boolean inEventLoop = inEventLoop();
         addTask(task);
@@ -986,6 +994,7 @@ public abstract class SingleThreadEventExecutor extends AbstractScheduledEventEx
                 boolean success = false;
                 updateLastExecutionTime();
                 try {
+                    //实现是NioEventLoop.run()
                     SingleThreadEventExecutor.this.run();
                     success = true;
                 } catch (Throwable t) {
