@@ -53,6 +53,9 @@ final class SelectedSelectionKeySetSelector extends Selector {
     @Override
     public int selectNow() throws IOException {
         selectionKeys.reset();
+        //这里实际上是调用的 EPollSelectorImpl的doSelect方法
+        //pollWrapper.poll(timeout);
+        //updated = epollWait(pollArrayAddress, NUM_EPOLLEVENTS, timeout, epfd);
         return delegate.selectNow();
     }
 
