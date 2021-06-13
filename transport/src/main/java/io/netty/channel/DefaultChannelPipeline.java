@@ -203,6 +203,7 @@ public class DefaultChannelPipeline implements ChannelPipeline {
 
             newCtx = newContext(group, filterName(name, handler), handler);
 
+            //加入节点 调整指针指向
             addLast0(newCtx);
 
             // If the registered is false it means that the channel was not registered on an eventLoop yet.
@@ -1094,6 +1095,10 @@ public class DefaultChannelPipeline implements ChannelPipeline {
         }
     }
 
+    /**
+     * 该方法中的this.pendingHandlerCallbackHead属性，在{@linkplain io.netty.bootstrap.ServerBootstrap}中的init(Channel)方法中
+     * 调用p.addLast方法{@linkplain DefaultChannelPipeline#addLast(String, ChannelHandler)}来初始化的.
+     */
     private void callHandlerAddedForAllHandlers() {
         final PendingHandlerCallback pendingHandlerCallbackHead;
         synchronized (this) {
